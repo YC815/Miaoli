@@ -449,5 +449,88 @@ if (document.readyState === 'loading') {
     startApp();
 }
 
+// 全域函數橋接 - 為HTML onclick處理器提供向後兼容性
+function createGlobalBridge() {
+    if (!window.MiaoliApp) {
+        console.warn('應用程序尚未初始化，全域函數暫時不可用');
+        return;
+    }
+    
+    const app = window.MiaoliApp;
+    const eventManager = app.getModule('eventManager');
+    const modalManager = app.getModule('modalManager');
+    const uiRenderer = app.getModule('uiRenderer');
+    const inventory = app.getModule('inventory');
+    const donations = app.getModule('donations');
+    const distribution = app.getModule('distribution');
+    
+    // 主要模態框操作
+    window.openModal = (mode, index = -1) => modalManager.openAddItemModal(mode, index);
+    window.closeModal = () => modalManager.closeAll();
+    window.saveItem = () => eventManager.handleSaveItem();
+    
+    // 庫存管理
+    window.openAddInventoryItemModal = () => modalManager.openAddInventoryModal();
+    window.closeAddInventoryItemModal = () => modalManager.closeAll();
+    window.addCustomInventoryItem = () => inventory.addCustomItem();
+    
+    // 批量操作
+    window.openBatchPickupModal = () => modalManager.openBatchPickupModal();
+    window.closeBatchPickupModal = () => modalManager.closeAll();
+    window.confirmBatchPickup = () => distribution.confirmBatchPickup();
+    window.selectAllAvailableItems = () => distribution.selectAllAvailableItems();
+    
+    // 領取操作
+    window.closePickupModal = () => modalManager.closeAll();
+    window.confirmPickup = () => distribution.confirmPickup();
+    window.closePickupListModal = () => modalManager.closeAll();
+    
+    // 收據管理
+    window.printReceipt = () => eventManager.handlePrintReceipt();
+    window.closeReceiptSelectionModal = () => modalManager.closeAll();
+    window.generateSelectedReceipts = () => donations.generateSelectedReceipts();
+    window.selectAllReceipts = () => donations.selectAllReceipts();
+    window.clearAllReceipts = () => donations.clearAllReceipts();
+    
+    // 庫存調整
+    window.openStockAdjustmentModal = () => modalManager.openStockAdjustmentModal();
+    window.closeStockAdjustmentModal = () => modalManager.closeAll();
+    
+    // 捐贈管理
+    window.closeEditDonationModal = () => modalManager.closeAll();
+    window.saveDonationEdit = () => donations.saveDonationEdit();
+    
+    // 搜尋和篩選
+    window.searchItems = () => eventManager.handleSearch();
+    window.searchDonationRecords = () => eventManager.handleDonationSearch();
+    window.searchPickupRecords = () => eventManager.handleRecordSearch();
+    window.clearFilters = () => uiRenderer.clearFilters();
+    
+    // 標籤頁切換
+    window.switchTab = (tab) => eventManager.handleTabSwitch(tab);
+    
+    // 表格排序
+    window.sortTable = (field) => eventManager.handleSort(field);
+    
+    // 資料導出
+    window.exportData = () => eventManager.handleExport();
+    window.exportDonationRecords = () => donations.exportRecords();
+    window.exportPickupRecords = () => distribution.exportRecords();
+    
+    // 動態表單行管理
+    window.addItemRow = () => eventManager.handleAddItemRow();
+    window.removeItemRow = (button) => eventManager.handleRemoveItemRow(button);
+    
+    console.log('全域函數橋接已建立');
+}
+
+// 在應用程序初始化後建立橋接
+document.addEventListener('DOMContentLoaded', () => {
+    // 等待應用程序完全初始化
+    setTimeout(() => {
+        createGlobalBridge();
+    }, 100);
+});
+
 // 導出主要接口
 export { MiaoliApp, startApp, restartApp };

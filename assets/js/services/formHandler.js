@@ -4,7 +4,7 @@
  */
 import { DOMUtils } from '../utils/dom.js';
 import { Validators } from '../utils/validators.js';
-import { INVENTORY_ITEMS_LIST } from '../config/constants.js';
+import { INVENTORY_ITEMS_LIST, RECIPIENT_UNITS } from '../config/constants.js';
 
 export class FormHandler {
     constructor(dataManager, inventoryManager, donationsManager, distributionManager) {
