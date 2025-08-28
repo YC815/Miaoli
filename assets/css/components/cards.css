@@ -1,0 +1,81 @@
+/* Card Components Styles */
+
+.stats-card {
+    @apply bg-white rounded-lg shadow-md p-3 sm:p-6;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+}
+
+.stats-card-icon {
+    @apply p-2 sm:p-3 rounded-full flex-shrink-0;
+}
+
+.stats-card-content {
+    @apply ml-2 sm:ml-4 min-w-0;
+}
+
+.stats-card-label {
+    @apply text-xs sm:text-sm font-medium text-gray-600 truncate;
+}
+
+.stats-card-value {
+    @apply text-lg sm:text-2xl font-bold text-gray-900;
+}
+
+.item-card {
+    @apply bg-gray-50 rounded-lg p-4 border border-gray-200;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.item-card:hover {
+    @apply bg-white border-gray-300;
+}
+
+.item-card-header {
+    @apply flex justify-between items-start mb-2;
+}
+
+.item-card-title {
+    @apply text-base font-medium text-gray-900 truncate;
+}
+
+.item-card-category {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-blue-100 text-blue-800 mt-1;
+}
+
+.item-card-quantity {
+    @apply text-lg font-bold;
+}
+
+.item-card-unit {
+    @apply text-xs text-gray-500;
+}
+
+.item-card-details {
+    @apply space-y-2 text-sm text-gray-600;
+}
+
+.item-card-warning {
+    @apply text-xs mt-1;
+}
+
+.item-card-warning.expired {
+    @apply text-red-500;
+}
+
+.item-card-warning.expiring {
+    @apply text-orange-500;
+}
+
+.item-card-warning.low-stock {
+    @apply text-orange-500;
+}
+
+.item-card-warning.out-of-stock {
+    @apply text-red-500;
+}

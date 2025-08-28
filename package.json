@@ -1,0 +1,46 @@
+{
+  "name": "miaoli-materials-management",
+  "version": "2.0.0",
+  "description": "苗栗社福促進協會物資管理平台",
+  "main": "assets/js/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "build": "echo 'No build process required for static site'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'",
+    "validate": "node --check assets/js/main.js"
+  },
+  "keywords": [
+    "charity",
+    "materials-management",
+    "inventory",
+    "donations",
+    "taiwan",
+    "miaoli",
+    "social-welfare"
+  ],
+  "author": "T-Cross",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YC815/Miaoli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YC815/Miaoli/issues"
+  },
+  "homepage": "https://github.com/YC815/Miaoli#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "devDependencies": {},
+  "dependencies": {}
+}
