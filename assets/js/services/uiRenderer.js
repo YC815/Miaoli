@@ -457,6 +457,54 @@ export class UIRenderer {
         DOMUtils.setHTML(select, `<option value="">全部類別</option>${options}`);
     }
     
+    // 處理視窗大小變化
+    handleResize() {
+        // 重新渲染當前視圖以適應新的視窗大小
+        this.renderItems();
+        
+        // 檢查是否需要切換手機/桌面視圖
+        const isMobile = window.innerWidth < 640; // sm breakpoint
+        const mobileView = DOMUtils.get('#mobileView');
+        const desktopView = DOMUtils.get('.hidden.sm\\:block');
+        
+        if (isMobile) {
+            DOMUtils.show('#mobileView');
+            if (desktopView) {
+                DOMUtils.hide(desktopView);
+            }
+        } else {
+            DOMUtils.hide('#mobileView');
+            if (desktopView) {
+                DOMUtils.show(desktopView);
+            }
+        }
+        
+        // 重新調整統計卡片布局
+        this.adjustStatsLayout();
+        
+        console.log(`📱 UI 已適應新的視窗大小: ${window.innerWidth}x${window.innerHeight}`);
+    }
+    
+    // 調整統計卡片布局
+    adjustStatsLayout() {
+        const statsContainer = DOMUtils.get('#statsContainer');
+        if (!statsContainer) return;
+        
+        const width = window.innerWidth;
+        
+        // 根據螢幕寬度調整統計卡片的網格布局
+        if (width < 640) {
+            // 手機：2列
+            statsContainer.className = 'grid grid-cols-2 gap-3 mb-6';
+        } else if (width < 1024) {
+            // 平板：3列
+            statsContainer.className = 'grid grid-cols-3 gap-4 mb-6';
+        } else {
+            // 桌面：4列
+            statsContainer.className = 'grid grid-cols-4 gap-6 mb-6';
+        }
+    }
+    
     // 工具方法
     extractDonorName(notes) {
         const match = notes.match(/捐贈者：(.+?)(?:\s\(|$)/);

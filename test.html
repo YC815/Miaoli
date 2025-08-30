@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clerk 整合測試</title>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <!-- 環境變數配置 -->
+    <script src="config.js" onerror="console.warn('⚠️ config.js 未找到')"></script>
+    
+    <!-- Clerk Authentication SDK -->
+    <script
+        async
+        crossorigin="anonymous"
+        data-clerk-publishable-key=""
+        src="https://unpkg.com/@clerk/clerk-js@latest/dist/clerk.browser.js"
+        type="text/javascript"
+        onload="console.log('📦 Clerk SDK 載入完成')"
+        onerror="console.warn('❌ Clerk SDK 載入失敗')">
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Clerk 整合測試</h1>
+            
+            <!-- 測試狀態 -->
+            <div class="space-y-4">
+                <div class="p-4 border rounded-lg">
+                    <h2 class="font-semibold text-lg mb-2">1. 環境變數載入</h2>
+                    <div id="envStatus" class="text-gray-600">檢查中...</div>
+                </div>
+                
+                <div class="p-4 border rounded-lg">
+                    <h2 class="font-semibold text-lg mb-2">2. Clerk SDK 載入</h2>
+                    <div id="clerkStatus" class="text-gray-600">檢查中...</div>
+                </div>
+                
+                <div class="p-4 border rounded-lg">
+                    <h2 class="font-semibold text-lg mb-2">3. Publishable Key 設置</h2>
+                    <div id="keyStatus" class="text-gray-600">檢查中...</div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <button id="refreshBtn" onclick="location.reload()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                    重新測試
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 測試環境變數載入
+        function testEnvironmentVariables() {
+            const envStatus = document.getElementById('envStatus');
+            
+            if (window.ENV_VARS) {
+                envStatus.innerHTML = '<span class="text-green-600">✅ 環境變數載入成功</span>';
+                envStatus.innerHTML += '<div class="text-sm text-gray-500 mt-1">載入的變數: ' + 
+                    Object.keys(window.ENV_VARS).length + ' 個</div>';
+            } else {
+                envStatus.innerHTML = '<span class="text-red-600">❌ 環境變數載入失敗</span>';
+            }
+        }
+
+        // 測試 Clerk SDK
+        function testClerkSDK() {
+            const clerkStatus = document.getElementById('clerkStatus');
+            
+            if (typeof window.Clerk !== 'undefined') {
+                clerkStatus.innerHTML = '<span class="text-green-600">✅ Clerk SDK 載入成功</span>';
+            } else {
+                clerkStatus.innerHTML = '<span class="text-red-600">❌ Clerk SDK 未載入</span>';
+            }
+        }
+
+        // 測試 Publishable Key
+        function testPublishableKey() {
+            const keyStatus = document.getElementById('keyStatus');
+            
+            if (window.ENV_VARS && window.ENV_VARS.VITE_CLERK_PUBLISHABLE_KEY) {
+                const key = window.ENV_VARS.VITE_CLERK_PUBLISHABLE_KEY;
+                if (key && key !== 'pk_test_your-key-here') {
+                    keyStatus.innerHTML = '<span class="text-green-600">✅ Publishable Key 已設置</span>';
+                    keyStatus.innerHTML += '<div class="text-sm text-gray-500 mt-1">Key: ' + 
+                        key.substring(0, 20) + '...</div>';
+                } else {
+                    keyStatus.innerHTML = '<span class="text-yellow-600">⚠️ 使用預設 Key</span>';
+                }
+            } else {
+                keyStatus.innerHTML = '<span class="text-red-600">❌ Publishable Key 未找到</span>';
+            }
+        }
+
+        // 初始測試
+        setTimeout(() => {
+            testEnvironmentVariables();
+            testPublishableKey();
+        }, 500);
+
+        // Clerk SDK 載入完成後測試
+        setTimeout(() => {
+            testClerkSDK();
+        }, 2000);
+
+        console.log('🧪 測試頁面載入完成');
+    </script>
+</body>
+</html>

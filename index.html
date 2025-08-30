@@ -4,10 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>苗栗社福促進協會物資管理平台</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/css/main.css">
     <script src="assets/js/config/tailwind-config.js"></script>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
+    
+    <!-- 環境變數配置 (優先載入) -->
+    <script src="config.js" onerror="console.warn('⚠️ config.js 未找到，將嘗試其他方式載入環境變數')"></script>
+    
+    <!-- 載入 Clerk Localizations -->
+    <script src="https://unpkg.com/@clerk/localizations@latest/dist/index.umd.js" 
+            onload="console.log('✅ Clerk 語系包載入完成:', !!window.ClerkLocalizations?.zhTW)"
+            onerror="console.warn('⚠️ Clerk 語系包載入失敗')"></script>
+
+    <!-- 動態載入 Clerk SDK -->
+    <script>
+        (function() {
+            const env = window.__ENV__ || {};
+            const publishableKey = env.VITE_CLERK_PUBLISHABLE_KEY;
+
+            if (!publishableKey || 
+                publishableKey === 'pk_test_your-key-here' || 
+                publishableKey === 'pk_test_your-actual-key-here') {
+                console.error('❌ Clerk Publishable Key 未正確設置');
+                console.log('請按照 CLERK_SETUP.md 指南設置正確的 key');
+                window.dispatchEvent(new CustomEvent('clerk:load-failed'));
+                return;
+            }
+
+            // 驗證 key 格式
+            if (!publishableKey.startsWith('pk_test_') && !publishableKey.startsWith('pk_live_')) {
+                console.error('❌ Clerk Publishable Key 格式不正確');
+                console.log('正確格式應該以 pk_test_ 或 pk_live_ 開頭');
+                window.dispatchEvent(new CustomEvent('clerk:load-failed'));
+                return;
+            }
+
+            // 動態創建 Clerk 腳本
+            const clerkScript = document.createElement('script');
+            clerkScript.async = true;
+            clerkScript.crossOrigin = 'anonymous';
+            clerkScript.setAttribute('data-clerk-publishable-key', publishableKey);
+            clerkScript.src = 'https://unpkg.com/@clerk/clerk-js@latest/dist/clerk.browser.js';
+            
+            clerkScript.onload = async () => {
+                console.log('📦 Clerk SDK 載入完成');
+                try {
+                    // 直接初始化 Clerk，不需要額外配置
+                    await window.Clerk.load();
+                    console.log('✅ Clerk 初始化完成');
+                    window.dispatchEvent(new CustomEvent('clerk:ready'));
+                } catch (error) {
+                    console.error('❌ Clerk 初始化失敗:', error);
+                    window.dispatchEvent(new CustomEvent('clerk:load-failed'));
+                }
+            };
+            
+            clerkScript.onerror = () => {
+                console.error('❌ Clerk SDK 載入失敗');
+                window.dispatchEvent(new CustomEvent('clerk:load-failed'));
+            };
+
+            document.head.appendChild(clerkScript);
+        })();
+    </script>
 
 </head>
 <body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen font-chinese">
@@ -16,8 +77,17 @@
     <div id="mainApp">
         <!-- 頂部導航欄 -->
         <nav class="bg-white shadow-sm border-b border-gray-200">
-            <div class="container mx-auto px-4 py-3">
-                <h1 class="text-xl font-bold text-gray-800 text-center">物資管理平台</h1>
+            <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+                <h1 class="text-xl font-bold text-gray-800">物資管理平台</h1>
+                <!-- 右側用戶資訊區域 -->
+                <div class="flex items-center gap-3">
+                    <!-- 職位徽章區域 -->
+                    <div id="roleBadgeContainer"></div>
+                    <!-- 用戶頭像區域 -->
+                    <div id="userButton">
+                        <!-- Clerk 用戶按鈕將在這裡動態載入 -->
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -76,6 +146,13 @@
                             </svg>
                             <span class="hidden sm:inline">捐贈物品收據列印</span>
                             <span class="sm:hidden">列印收據</span>
+                        </button>
+                        <button id="userManagementBtn" onclick="openUserManagement()" class="col-span-2 sm:col-span-1 bg-gray-600 hover:bg-gray-700 text-white px-3 sm:px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base" style="display: none;">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                            <span class="hidden sm:inline">用戶管理</span>
+                            <span class="sm:hidden">用戶</span>
                         </button>
                     </div>
                     
@@ -736,6 +813,6 @@
         </div>
     </div>
 
-    <script type="module" src="assets/js/main.js"></script>
+    <script type="module" src="assets/js/main.js?v=20241230-no-alerts"></script>
 </body>
 </html>

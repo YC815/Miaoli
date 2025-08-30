@@ -139,7 +139,7 @@
     function switchTab(tab) {
         // 權限檢查
         if (userRole === 'volunteer' && (tab === 'donation' || tab === 'records')) {
-            alert('您沒有權限查看此頁面');
+            console.error('❌ 權限被拒絕: 您沒有權限查看此頁面', '標籤頁:', tab);
             return;
         }
         
@@ -214,7 +214,7 @@
     // 開啟 Modal（加入權限檢查）
     function openModal(mode, index = -1) {
         if (!checkPermission('staff')) {
-            alert('您沒有權限執行此操作');
+            console.error('❌ 權限被拒絕: 您沒有權限執行此操作', '需要角色: staff 或以上');
             return;
         }
         
@@ -258,7 +258,7 @@
     // 儲存物資
     function saveItem() {
         if (!checkPermission('staff')) {
-            alert('您沒有權限執行此操作');
+            console.error('❌ 權限被拒絕: 您沒有權限執行此操作', '需要角色: staff 或以上');
             return;
         }
         
@@ -278,7 +278,7 @@
             const expiryDate = row.querySelector('.item-expiry').value;
             
             if (!name || !quantity || quantity <= 0) {
-                alert(`請完整填寫第 ${i + 1} 項物資資訊`);
+                console.error(`❌ 表單驗證錯誤: 請完整填寫第 ${i + 1} 項物資資訊`);
                 return;
             }
             
@@ -286,7 +286,7 @@
         }
         
         if (itemsData.length === 0) {
-            alert('請至少新增一項物資');
+            console.error('❌ 表單驗證錯誤: 請至少新增一項物資');
             return;
         }
         
@@ -521,7 +521,7 @@
     // 刪除物資（加入權限檢查）
     function deleteItem(index) {
         if (!checkPermission('admin')) {
-            alert('您沒有權限執行此操作');
+            console.error('❌ 權限被拒絕: 您沒有權限執行此操作', '需要角色: admin');
             return;
         }
         

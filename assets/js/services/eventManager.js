@@ -241,7 +241,7 @@ export class EventManager {
     
     handleTabSwitch(tab) {
         if (!this.authManager.canAccessTab(tab)) {
-            alert('您沒有權限查看此頁面');
+            console.error('❌ 權限被拒絕: 您沒有權限查看此頁面', '標籤頁:', tab);
             return;
         }
         

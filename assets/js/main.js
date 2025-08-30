@@ -18,6 +18,7 @@ import { InventoryManager } from './services/inventory.js';
 import { DonationsManager } from './services/donations.js';
 import { DistributionManager } from './services/distribution.js';
 import { FormHandler } from './services/formHandler.js';
+import UserManagement from './components/user-management.js';
 
 /**
  * 苗栗物資管理應用程序主類
@@ -41,6 +42,12 @@ class MiaoliApp {
             // 核心模塊初始化
             this.modules.auth = new AuthManager();
             this.modules.dataManager = new DataManager();
+            
+            // 為調試目的將 AuthManager 設為全域變數
+            window.authManager = this.modules.auth;
+            
+            // 初始化身份驗證
+            this.modules.auth.init();
             
             // UI模塊初始化
             this.modules.uiRenderer = new UIRenderer(this.modules.dataManager, this.modules.auth);
@@ -337,16 +344,14 @@ class MiaoliApp {
      * 顯示錯誤訊息
      */
     showErrorMessage(message, title = '錯誤') {
-        // 可以替換為更優雅的通知系統
-        alert(`${title}\n\n${message}`);
+        console.error(`❌ ${title}:`, message);
     }
     
     /**
      * 顯示資訊訊息
      */
     showInfoMessage(message, title = '資訊') {
-        // 可以替換為更優雅的通知系統
-        alert(`${title}\n\n${message}`);
+        console.info(`ℹ️ ${title}:`, message);
     }
     
     /**
@@ -520,6 +525,12 @@ function createGlobalBridge() {
     // 動態表單行管理
     window.addItemRow = () => eventManager.handleAddItemRow();
     window.removeItemRow = (button) => eventManager.handleRemoveItemRow(button);
+    
+    // 用戶管理
+    window.openUserManagement = () => {
+        const userManagement = new UserManagement(app.getModule('auth'));
+        userManagement.createUserManagementModal();
+    };
     
     console.log('全域函數橋接已建立');
 }

@@ -5,13 +5,17 @@
   "main": "assets/js/main.js",
   "type": "module",
   "scripts": {
-    "start": "python -m http.server 8000",
-    "dev": "python -m http.server 8000",
+    "setup": "node scripts/generate-config.js",
+    "start": "npm run setup && python -m http.server 8000",
+    "dev": "npm run setup && (python -m http.server 8000 & sleep 1 && open http://localhost:8000)",
+    "dev-arc": "npm run setup && open -a Arc http://localhost:8000",
     "serve": "python -m http.server 8000",
-    "build": "echo 'No build process required for static site'",
-    "test": "echo 'No tests specified'",
+    "build": "npm run setup && echo 'Static site ready for deployment'",
+    "test": "npm run setup && echo '🧪 請用 VS Code Live Server 打開 test.html 進行測試'",
     "lint": "echo 'No linting configured'",
-    "validate": "node --check assets/js/main.js"
+    "validate": "node --check assets/js/main.js",
+    "clean": "rm -f config.js",
+    "reset-env": "cp .env.example .env && echo '📋 .env 檔案已重置為範例，請編輯 .env 後執行 npm run setup'"
   },
   "keywords": [
     "charity",

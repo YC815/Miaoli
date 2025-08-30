@@ -49,6 +49,9 @@ build/
 .env.test
 .env.production
 
+# 自動生成的配置檔案
+config.js
+
 # Cache
 .cache/
 .parcel-cache/

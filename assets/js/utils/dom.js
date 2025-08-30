@@ -89,7 +89,14 @@ export const DOMUtils = {
     
     // 事件委託
     delegate(parentSelector, eventType, targetSelector, handler) {
-        const parent = this.get(parentSelector);
+        let parent;
+        if (typeof parentSelector === 'string') {
+            parent = this.get(parentSelector);
+        } else if (parentSelector && parentSelector.nodeType) {
+            // 如果傳入的是DOM元素
+            parent = parentSelector;
+        }
+        
         if (parent) {
             parent.addEventListener(eventType, (e) => {
                 if (e.target.matches(targetSelector)) {
@@ -107,5 +114,41 @@ export const DOMUtils = {
         if (element) {
             element.innerHTML = '';
         }
+    },
+    
+    // 移除元素
+    remove(element) {
+        if (typeof element === 'string') {
+            element = this.get(element);
+        }
+        if (element && element.parentNode) {
+            element.parentNode.removeChild(element);
+        }
+    },
+    
+    // 創建元素
+    createElement(tagName, attributes = {}, textContent = '') {
+        const element = document.createElement(tagName);
+        
+        // 設置屬性
+        Object.keys(attributes).forEach(key => {
+            if (key === 'className') {
+                element.className = attributes[key];
+            } else {
+                element.setAttribute(key, attributes[key]);
+            }
+        });
+        
+        // 設置文字內容
+        if (textContent) {
+            element.textContent = textContent;
+        }
+        
+        return element;
+    },
+    
+    // 檢查元素是否存在
+    exists(selector) {
+        return !!this.get(selector);
     }
 };

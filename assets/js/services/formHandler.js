@@ -501,7 +501,8 @@ export class FormHandler {
     
     // 錯誤顯示
     showValidationErrors(errors) {
-        const errorMessage = errors.join('\n');
-        alert(errorMessage); // 可以替換為更優雅的錯誤顯示方式
+        const errorMessage = errors.join(', ');
+        console.error('❌ 表單驗證錯誤:', errorMessage);
+        console.error('📋 錯誤詳情:', errors);
     }
 }
